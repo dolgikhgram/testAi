@@ -1,0 +1,121 @@
+.item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  margin-bottom: 4px;
+  border-radius: 6px;
+  background-color: transparent;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  border: none;
+  outline: none;
+}
+.item:hover {
+  background-color: #e8e8e8;
+}
+.item.active {
+  background-color: #d0e8ff;
+}
+.item:focus-visible {
+  outline: 2px solid #0066cc;
+  outline-offset: 2px;
+}
+.content {
+  flex: 1;
+  min-width: 0;
+}
+.title {
+  font-size: 14px;
+  font-weight: 500;
+  color: #666;
+  margin-bottom: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.date {
+  font-size: 12px;
+  color: #666;
+}
+.actions {
+  display: flex;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.item:hover .actions {
+  opacity: 1;
+}
+.item:focus-within .actions {
+  opacity: 1;
+}
+@media (hover: none) and (pointer: coarse) {
+  .actions {
+    opacity: 1;
+  }
+}
+.actionButton {
+  padding: 4px 8px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 16px;
+  transition: background-color 0.2s;
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.actionButton:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+.actionButton:focus-visible {
+  outline: 2px solid #0066cc;
+  outline-offset: 2px;
+}
+.modalActions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+.warning {
+  color: #cc0000;
+  font-size: 14px;
+  margin-top: 8px;
+}
+@media (max-width: 768px) {
+  .item {
+    padding: 10px;
+  }
+  .title {
+    font-size: 13px;
+  }
+  .date {
+    font-size: 11px;
+  }
+  .actionButton {
+    padding: 6px;
+    font-size: 18px;
+  }
+}
+@media (prefers-color-scheme: dark) {
+  .item:hover {
+    background-color: #2a2a2a;
+  }
+  .item.active {
+    background-color: #003d7a;
+  }
+  .title {
+    color: #ededed;
+  }
+  .date {
+    color: #999;
+  }
+  .actionButton:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+}

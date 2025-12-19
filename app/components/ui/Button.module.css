@@ -1,0 +1,53 @@
+.button {
+  border: none;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+  outline: none;
+}
+.button:focus-visible {
+  outline: 2px solid #0066cc;
+  outline-offset: 2px;
+}
+.primary {
+  background-color: #0066cc;
+  color: white;
+}
+.primary:hover:not(:disabled) {
+  background-color: #0052a3;
+}
+.primary:active:not(:disabled) {
+  background-color: #003d7a;
+}
+.secondary {
+  background-color: #e0e0e0;
+  color: #333;
+}
+.secondary:hover:not(:disabled) {
+  background-color: #d0d0d0;
+}
+.secondary:active:not(:disabled) {
+  background-color: #c0c0c0;
+}
+.small {
+  padding: 6px 12px;
+  font-size: 14px;
+}
+.medium {
+  padding: 10px 20px;
+  font-size: 16px;
+}
+.large {
+  padding: 14px 28px;
+  font-size: 18px;
+}
+.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
