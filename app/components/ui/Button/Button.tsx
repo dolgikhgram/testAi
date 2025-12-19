@@ -1,4 +1,5 @@
 import React from 'react'
+import clsx from 'clsx'
 import styles from './Button.module.css'
 
 type ButtonVariant = 'primary' | 'secondary'
@@ -34,15 +35,15 @@ export function Button({
     }
   }
 
-  const buttonClasses = [
+  const buttonClasses = clsx(
     styles.button,
     styles[variant],
     styles[size],
-    disabled ? styles.disabled : '',
-    className,
-  ]
-    .filter(Boolean)
-    .join(' ')
+    {
+      [styles.disabled]: disabled,
+    },
+    className
+  )
 
   return (
     <button

@@ -1,27 +1,18 @@
 import React from 'react'
+import clsx from 'clsx'
 import styles from './Input.module.css'
 
 type InputSize = 'small' | 'medium' | 'large'
 
-type InputProps = {
+type InputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> & {
   type?: 'text' | 'email' | 'password' | 'number' | 'search'
-  value?: string
-  placeholder?: string
   label?: string
-  name?: string
-  id?: string
   size?: InputSize
-  disabled?: boolean
-  required?: boolean
   invalid?: boolean
   errorMessage?: string
   ariaLabel?: string
   ariaDescribedBy?: string
-  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void
-  onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void
-  onFocus?: (event: React.FocusEvent<HTMLInputElement>) => void
-  className?: string
-}
+} 
 
 export function Input({
   type = 'text',
@@ -46,15 +37,15 @@ export function Input({
   const errorId = errorMessage ? `${inputId}-error` : undefined
   const descriptionId = ariaDescribedBy || (errorMessage ? errorId : undefined)
 
-  const inputClasses = [
+  const inputClasses = clsx(
     styles.input,
     styles[size],
-    invalid ? styles.invalid : '',
-    disabled ? styles.disabled : '',
-    className,
-  ]
-    .filter(Boolean)
-    .join(' ')
+    {
+      [styles.invalid]: invalid,
+      [styles.disabled]: disabled,
+    },
+    className
+  )
 
   return (
     <div className={styles.wrapper}>

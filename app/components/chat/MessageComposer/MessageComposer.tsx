@@ -1,5 +1,5 @@
 import React, { useState, KeyboardEvent } from 'react'
-import { Button } from '../../ui/Button'
+import { Button } from '../../ui/Button/Button'
 import styles from './MessageComposer.module.css'
 
 type MessageComposerProps = {

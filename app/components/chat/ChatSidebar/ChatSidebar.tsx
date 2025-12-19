@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import { Input } from '../../ui/Input'
-import { Button } from '../../ui/Button'
+import { Input } from '../../ui/Input/Input'
+import { Button } from '../../ui/Button/Button'
 import type { DialogType } from '@/app/types/chat'
 import styles from './ChatSidebar.module.css'
 

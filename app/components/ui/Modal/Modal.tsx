@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react'
+import clsx from 'clsx'
 import styles from './Modal.module.css'
 
 type ModalProps = {
@@ -67,7 +68,7 @@ export function Modal({
       aria-modal="true"
       aria-labelledby={titleId}
     >
-      <div className={`${styles.modal} ${className}`}>
+      <div className={clsx(styles.modal, className)}>
         {title && (
           <h2 id={titleId} className={styles.title}>
             {title}

@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import clsx from 'clsx'
 import styles from './CodeBlock.module.css'
 
 type CodeBlockProps = {
@@ -30,7 +31,7 @@ export function CodeBlock({
   }
 
   return (
-    <div className={`${styles.wrapper} ${className}`}>
+    <div className={clsx(styles.wrapper, className)}>
       <div className={styles.header}>
         <span className={styles.language}>{language}</span>
         <button

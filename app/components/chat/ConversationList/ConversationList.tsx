@@ -1,5 +1,6 @@
 import React from 'react'
-import { Button } from '../../ui/Button'
+import clsx from 'clsx'
+import { Button } from '../../ui/Button/Button'
 import type { DialogType } from '@/app/types/chat'
 import styles from './ConversationList.module.css'
 
@@ -31,9 +32,9 @@ export function ConversationList({
           <Button
             key={dialog.id}
             variant="secondary"
-            className={`${styles.item} ${
-              activeDialogId === dialog.id ? styles.active : ''
-            }`}
+            className={clsx(styles.item, {
+              [styles.active]: activeDialogId === dialog.id,
+            })}
             onClick={() => onDialogSelect?.(dialog.id)}
             role="listitem"
             aria-pressed={activeDialogId === dialog.id}

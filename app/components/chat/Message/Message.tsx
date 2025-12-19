@@ -1,5 +1,6 @@
 import React from 'react'
-import { Button } from '../../ui/Button'
+import clsx from 'clsx'
+import { Button } from '../../ui/Button/Button'
 import type { MessageType } from '@/app/types/chat'
 import styles from './Message.module.css'
 
@@ -38,9 +39,11 @@ export function Message({
 
   return (
     <div
-      className={`${styles.message} ${
-        isUser ? styles.userMessage : styles.assistantMessage
-      } ${hasError ? styles.error : ''}`}
+      className={clsx(styles.message, {
+        [styles.userMessage]: isUser,
+        [styles.assistantMessage]: isAssistant,
+        [styles.error]: hasError,
+      })}
       role="article"
       aria-label={`Сообщение от ${isUser ? 'пользователя' : 'ассистента'}`}
     >
