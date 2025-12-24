@@ -4,41 +4,49 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
   padding: 20px;
+  animation: fadeIn 0.2s ease-out;
 }
+
+@media (prefers-color-scheme: light) {
+  .overlay {
+    background-color: rgba(0, 0, 0, 0.4);
+  }
+}
+
 .modal {
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  background-color: var(--surface-elevated);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  box-shadow: var(--shadow-lg);
   max-width: 500px;
   width: 100%;
   max-height: 90vh;
   display: flex;
   flex-direction: column;
   outline: none;
+  animation: slideIn 0.2s ease-out;
 }
 .title {
   margin: 0;
   padding: 20px 24px;
   font-size: 20px;
   font-weight: 600;
-  border-bottom: 1px solid #e0e0e0;
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border);
+  letter-spacing: -0.01em;
 }
 .content {
   padding: 24px;
   overflow-y: auto;
   flex: 1;
-}
-.overlay {
-  animation: fadeIn 0.2s ease-out;
-}
-.modal {
-  animation: slideIn 0.2s ease-out;
+  color: var(--text-primary);
 }
 @keyframes fadeIn {
   from {
@@ -56,15 +64,6 @@
   to {
     transform: translateY(0);
     opacity: 1;
-  }
-}
-@media (prefers-color-scheme: dark) {
-  .modal {
-    background-color: #1a1a1a;
-    color: #ededed;
-  }
-  .title {
-    border-bottom-color: #333;
   }
 }
 

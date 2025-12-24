@@ -14,7 +14,7 @@ type InputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> & {
   ariaDescribedBy?: string
 } 
 
-export function Input({
+export const Input = React.forwardRef<HTMLInputElement, InputProps>(({
   type = 'text',
   value,
   placeholder,
@@ -32,7 +32,7 @@ export function Input({
   onBlur,
   onFocus,
   className = '',
-}: InputProps) {
+}, ref) => {
   const inputId = id 
   const errorId = errorMessage ? `${inputId}-error` : undefined
   const descriptionId = ariaDescribedBy || (errorMessage ? errorId : undefined)
@@ -56,6 +56,7 @@ export function Input({
         </label>
       )}
       <input
+        ref={ref}
         type={type}
         id={inputId}
         name={name}
@@ -81,5 +82,7 @@ export function Input({
       )}
     </div>
   )
-}
+})
+
+Input.displayName = 'Input'
 

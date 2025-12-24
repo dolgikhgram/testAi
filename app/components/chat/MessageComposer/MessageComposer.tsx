@@ -1,4 +1,5 @@
 import React, { useState, KeyboardEvent } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '../../ui/Button/Button'
 import styles from './MessageComposer.module.css'
 
@@ -29,9 +30,11 @@ export function MessageComposer({
     }
   }
 
+  const hasText = inputValue.trim().length > 0
+
   return (
     <div className={styles.composer}>
-      <textarea
+      <motion.textarea
         placeholder={placeholder}
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
@@ -40,15 +43,28 @@ export function MessageComposer({
         aria-label="Введите сообщение"
         className={styles.textarea}
         rows={1}
+        whileFocus={{ scale: 1.005 }}
+        transition={{ duration: 0.15 }}
       />
-      <Button
-        onClick={handleSend}
-        disabled={!inputValue.trim() || disabled}
-        className={styles.sendButton}
-        aria-label="Отправить сообщение"
-      >
-        {disabled ? 'Отправка...' : 'Отправить'}
-      </Button>
+      <AnimatePresence>
+        {hasText && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            transition={{ duration: 0.15 }}
+          >
+            <Button
+              onClick={handleSend}
+              disabled={disabled}
+              className={styles.sendButton}
+              aria-label="Отправить сообщение"
+            >
+              {disabled ? 'Отправка...' : 'Отправить'}
+            </Button>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }

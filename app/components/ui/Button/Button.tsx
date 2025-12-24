@@ -1,4 +1,5 @@
 import React from 'react'
+import { motion } from 'framer-motion'
 import clsx from 'clsx'
 import styles from './Button.module.css'
 
@@ -46,7 +47,7 @@ export function Button({
   )
 
   return (
-    <button
+    <motion.button
       type={type}
       className={buttonClasses}
       onClick={onClick}
@@ -54,9 +55,12 @@ export function Button({
       disabled={disabled}
       aria-disabled={disabled}
       aria-label={ariaLabel}
+      whileHover={!disabled ? { scale: 1.02 } : {}}
+      whileTap={!disabled ? { scale: 0.98 } : {}}
+      transition={{ duration: 0.15 }}
     >
       {children}
-    </button>
+    </motion.button>
   )
 }
 

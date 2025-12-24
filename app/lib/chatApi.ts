@@ -50,13 +50,26 @@ type SendMessageRequest = {
                 reader.cancel()
                 throw new Error('Request aborted')
             }
+            
             const {done, value} = await reader.read()
+            
+            if(signal?.aborted){
+                reader.cancel()
+                throw new Error('Request aborted')
+            }
+            
             if(done){
                 break
             }
+            
             const chunk = decoder.decode(value, {stream: true})
             const lines = chunk.split('\n')    
             for (const line of lines){
+                if(signal?.aborted){
+                    reader.cancel()
+                    throw new Error('Request aborted')
+                }
+                
                 if(line.trim() === ''){
                     continue
                 }
@@ -68,7 +81,9 @@ type SendMessageRequest = {
                     try {
                         const parsed = JSON.parse(data)
                         if(parsed.content){
-                            streamCallback(parsed.content)
+                            if(!signal?.aborted){
+                                streamCallback(parsed.content)
+                            }
                         }
                     } catch (e) {
                         console.warn('Failed to parse chunk:', e)

@@ -20,6 +20,7 @@ export default function ChatPage() {
   const [error, setError] = useState<string | null>(null)
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const abortControllerRef = useRef<AbortController | null>(null)
+  const streamingContentRef = useRef<string>('')
 
   useEffect(() => {
     const loadedDialogs = loadDialogs()
@@ -50,6 +51,16 @@ export default function ChatPage() {
   const activeMessages = activeDialog?.messages || []
 
   const handleNewDialog = useCallback(() => {
+    const emptyDialog = dialogs.find(
+      (dialog) => !dialog.messages || dialog.messages.length === 0
+    )
+
+    if (emptyDialog) {
+      setActiveDialogId(emptyDialog.id)
+      setSearchQuery('')
+      setError(null)
+      return
+    }
     const newDialog: DialogType = {
       id: uuidv4(),
       title: `Новый диалог ${dialogs.length + 1}`,
@@ -61,7 +72,7 @@ export default function ChatPage() {
     setActiveDialogId(newDialog.id)
     setSearchQuery('')
     setError(null)
-  }, [dialogs.length])
+  }, [dialogs])
 
   const handleDialogSelect = useCallback((dialogId: string) => {
     setActiveDialogId(dialogId)
@@ -118,6 +129,7 @@ export default function ChatPage() {
       setIsLoading(true)
       setError(null)
       setStreamingMessage('')
+      streamingContentRef.current = ''
 
       const abortController = new AbortController()
       abortControllerRef.current = abortController
@@ -130,6 +142,7 @@ export default function ChatPage() {
           (chunk: string) => {
             if (!abortController.signal.aborted) {
               accumulatedContent += chunk
+              streamingContentRef.current = accumulatedContent
               setStreamingMessage(accumulatedContent)
             }
           },
@@ -138,7 +151,7 @@ export default function ChatPage() {
           abortController.signal
         )
 
-        if (!abortController.signal.aborted && accumulatedContent) {
+        if (!abortController.signal.aborted && accumulatedContent.trim()) {
           const assistantMessage: MessageType = {
             id: uuidv4(),
             role: 'assistant',
@@ -160,10 +173,36 @@ export default function ChatPage() {
         }
 
         setStreamingMessage(null)
+        streamingContentRef.current = ''
       } catch (err) {
-        if (!abortController.signal.aborted) {
+        if (abortController.signal.aborted) {
+          const currentContent = streamingContentRef.current || ''
+          if (currentContent.trim() && activeDialogId) {
+            const assistantMessage: MessageType = {
+              id: uuidv4(),
+              role: 'assistant',
+              content: currentContent,
+              timestamp: new Date(),
+            }
+
+            setDialogs((prev) =>
+              prev.map((dialog) =>
+                dialog.id === activeDialogId
+                  ? {
+                      ...dialog,
+                      messages: [...(dialog.messages || []), assistantMessage],
+                      updatedAt: new Date(),
+                    }
+                  : dialog
+              )
+            )
+          }
+          setStreamingMessage(null)
+          streamingContentRef.current = ''
+        } else {
           setError(err instanceof Error ? err.message : 'Ошибка отправки сообщения')
           setStreamingMessage(null)
+          streamingContentRef.current = ''
         }
       } finally {
         setIsLoading(false)
@@ -176,11 +215,35 @@ export default function ChatPage() {
   const handleStopGeneration = useCallback(() => {
     if (abortControllerRef.current) {
       abortControllerRef.current.abort()
+      
+      const currentContent = streamingContentRef.current || ''
+      if (currentContent.trim() && activeDialogId) {
+        const assistantMessage: MessageType = {
+          id: uuidv4(),
+          role: 'assistant',
+          content: currentContent,
+          timestamp: new Date(),
+        }
+
+        setDialogs((prev) =>
+          prev.map((dialog) =>
+            dialog.id === activeDialogId
+              ? {
+                  ...dialog,
+                  messages: [...(dialog.messages || []), assistantMessage],
+                  updatedAt: new Date(),
+                }
+              : dialog
+          )
+        )
+      }
+
       abortControllerRef.current = null
+      streamingContentRef.current = ''
       setIsLoading(false)
       setStreamingMessage(null)
     }
-  }, [])
+  }, [activeDialogId])
 
   const handleRetry = useCallback(() => {
     if (activeMessages.length > 0) {
@@ -290,16 +353,18 @@ export default function ChatPage() {
                 ☰
               </button>
               <h1 className={styles.chatTitle}>{activeDialog.title}</h1>
-              {isLoading && (
-                <Button
-                  onClick={handleStopGeneration}
-                  variant="secondary"
-                  size="small"
-                  aria-label="Остановить генерацию"
-                >
-                  Stop
-                </Button>
-              )}
+              <div className={styles.chatHeaderActions}>
+                {isLoading && (
+                  <button
+                    onClick={handleStopGeneration}
+                    className={styles.stopButton}
+                    aria-label="Остановить генерацию"
+                  >
+                    <span className={styles.stopIcon}>⏹</span>
+                    <span>Stop</span>
+                  </button>
+                )}
+              </div>
             </div>
 
             <div className={styles.messagesContainer}>
@@ -312,11 +377,15 @@ export default function ChatPage() {
                 </div>
               )}
 
-              <MessageList
-                messages={activeMessages}
-                streamingMessage={streamingMessage}
-                isLoading={isLoading && !streamingMessage}
-              />
+              {activeMessages.length === 0 && !streamingMessage && !isLoading ? (
+                <div className={styles.emptyMessage}>Начните диалог, отправив сообщение</div>
+              ) : (
+                <MessageList
+                  messages={activeMessages}
+                  streamingMessage={streamingMessage}
+                  isLoading={isLoading && !streamingMessage}
+                />
+              )}
             </div>
 
             <div className={styles.composerContainer}>

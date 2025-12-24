@@ -1,4 +1,6 @@
 import React, { useState } from 'react'
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism'
 import clsx from 'clsx'
 import styles from './CodeBlock.module.css'
 
@@ -15,12 +17,10 @@ export function CodeBlock({
 }: CodeBlockProps) {
   const [copied, setCopied] = useState(false)
 
-
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(code)
       setCopied(true)
-      
 
       setTimeout(() => {
         setCopied(false)
@@ -42,9 +42,34 @@ export function CodeBlock({
           {copied ? 'Скопировано!' : 'Копировать'}
         </button>
       </div>
-      <pre className={styles.pre}>
-        <code className={styles.code}>{code}</code>
-      </pre>
+      <div className={styles.codeContainer}>
+        <SyntaxHighlighter
+          language={language}
+          style={vscDarkPlus}
+          showLineNumbers
+          lineNumberStyle={{
+            minWidth: '3em',
+            paddingRight: '1em',
+            color: '#858585',
+            userSelect: 'none',
+          }}
+          customStyle={{
+            margin: 0,
+            padding: '16px',
+            background: '#1e1e1e',
+            borderRadius: '0 0 8px 8px',
+            fontSize: '14px',
+            lineHeight: '1.5',
+          }}
+          codeTagProps={{
+            style: {
+              fontFamily: 'var(--font-mono)',
+            },
+          }}
+        >
+          {code}
+        </SyntaxHighlighter>
+      </div>
     </div>
   )
 }

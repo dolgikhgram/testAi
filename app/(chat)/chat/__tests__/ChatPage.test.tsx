@@ -8,8 +8,13 @@ import * as storage from '@/app/lib/storage'
 
 jest.mock('@/app/lib/chatApi')
 jest.mock('@/app/lib/storage')
+
+let uuidCounter = 0
 jest.mock('uuid', () => ({
-  v4: jest.fn(() => 'test-uuid-123'),
+  v4: jest.fn(() => {
+    uuidCounter++
+    return `test-uuid-${uuidCounter}`
+  }),
 }))
 
 const mockChatApi = chatApi as jest.Mocked<typeof chatApi>
@@ -17,16 +22,22 @@ const mockStorage = storage as jest.Mocked<typeof storage>
 
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
-  value: jest.fn().mockImplementation(() => ({
+  value: jest.fn().mockImplementation((query) => ({
     matches: false,
+    media: query,
+    onchange: null,
     addListener: jest.fn(),
     removeListener: jest.fn(),
+    addEventListener: jest.fn(),
+    removeEventListener: jest.fn(),
+    dispatchEvent: jest.fn(),
   })),
 })
 
 describe('ChatPage тесты', () => {
   beforeEach(() => {
     jest.clearAllMocks()
+    uuidCounter = 0
     localStorage.clear()
     mockStorage.loadDialogs.mockReturnValue([])
     mockStorage.saveDialogs.mockImplementation(() => {})

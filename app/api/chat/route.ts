@@ -17,7 +17,16 @@ function generateBotResponse(message: string): string {
         return 'Я умею отвечать на вопросы и повторять твои сообщения!'
       }
 
-    return `Ты сказал "${message}". Это интересно!`
+    const codeExample = `// Пример функции на основе вашего запроса: "${message}"
+function processMessage(text) {
+  const result = text.toLowerCase().trim();
+  return \`Обработано: \${result}\`;
+}
+
+const userInput = "${message}";
+console.log(processMessage(userInput));`
+
+    return `Вы написали: "${message}"\n\nВот пример кода, который обрабатывает ваш текст:\n\n\`\`\`javascript\n${codeExample}\n\`\`\``
 }
 
 function delay (ms: number): Promise<void> {
@@ -38,7 +47,7 @@ function streamResponse(message: string, currentId: string | undefined, requestS
                 }
                 const word = words[i] + (i < words.length - 1 ? ' ' : '')
                 controller.enqueue(encoder.encode(`data: ${JSON.stringify({ content: word })}\n\n`))
-                await delay(100)
+                await delay(400)
             }
             controller.enqueue(encoder.encode('data: [DONE]\n\n'))
             controller.close()
